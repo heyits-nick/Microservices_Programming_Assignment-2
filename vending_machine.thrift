@@ -54,3 +54,11 @@ service WeatherService{
 		1: i64 city
 	)
 }
+
+service BeveragePreferenceService {
+  /**
+   * Given a hot/cold preference (BeverageType),
+   * return one of three hot drinks if Hot, or three cold drinks otherwise.
+   */
+  string getBeverage(1: BeverageType btype)
+}

@@ -6,26 +6,12 @@
 --
 
 
-local vending_machine_ttype = require 'vending_machine_ttypes'
+require 'Thrift'
+require 'vending_machine_ttypes'
 
-local Thrift = require 'Thrift'
-local TType = Thrift.TType
-local TMessageType = Thrift.TMessageType
-local __TObject = Thrift.__TObject
-local TApplicationException = Thrift.TApplicationException
-local __TClient = Thrift.__TClient
-local __TProcessor = Thrift.__TProcessor
-local ttype = Thrift.ttype
-local ttable_size = Thrift.ttable_size
-local TException = Thrift.TException
-
-local OrderBeverageServiceClient = __TObject.new(__TClient, {
+OrderBeverageServiceClient = __TObject.new(__TClient, {
   __type = 'OrderBeverageServiceClient'
 })
-
-local PlaceOrder_args = __TObject:new{
-	  city
-}
 
 function OrderBeverageServiceClient:PlaceOrder(city)
   self:send_PlaceOrder(city)
@@ -59,13 +45,12 @@ function OrderBeverageServiceClient:recv_PlaceOrder(city)
   end
   error(TApplicationException:new{errorCode = TApplicationException.MISSING_RESULT})
 end
-
-local OrderBeverageServiceIface = __TObject:new{
+OrderBeverageServiceIface = __TObject:new{
   __type = 'OrderBeverageServiceIface'
 }
 
 
-local OrderBeverageServiceProcessor = __TObject.new(__TProcessor
+OrderBeverageServiceProcessor = __TObject.new(__TProcessor
 , {
  __type = 'OrderBeverageServiceProcessor'
 })
@@ -74,20 +59,17 @@ function OrderBeverageServiceProcessor:process(iprot, oprot, server_ctx)
   local name, mtype, seqid = iprot:readMessageBegin()
   local func_name = 'process_' .. name
   if not self[func_name] or ttype(self[func_name]) ~= 'function' then
-    if oprot ~= nil then
-      iprot:skip(TType.STRUCT)
-      iprot:readMessageEnd()
-      x = TApplicationException:new{
-        errorCode = TApplicationException.UNKNOWN_METHOD
-      }
-      oprot:writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
-      x:write(oprot)
-      oprot:writeMessageEnd()
-      oprot.trans:flush()
-    end
-    return false, 'Unknown function '..name
+    iprot:skip(TType.STRUCT)
+    iprot:readMessageEnd()
+    x = TApplicationException:new{
+      errorCode = TApplicationException.UNKNOWN_METHOD
+    }
+    oprot:writeMessageBegin(name, TMessageType.EXCEPTION, seqid)
+    x:write(oprot)
+    oprot:writeMessageEnd()
+    oprot.trans:flush()
   else
-    return self[func_name](self, seqid, iprot, oprot, server_ctx)
+    self[func_name](self, seqid, iprot, oprot, server_ctx)
   end
 end
 
@@ -110,14 +92,13 @@ function OrderBeverageServiceProcessor:process_PlaceOrder(seqid, iprot, oprot, s
   result:write(oprot)
   oprot:writeMessageEnd()
   oprot.trans:flush()
-  return status, res
 end
 
 -- HELPER FUNCTIONS AND STRUCTURES
 
---local PlaceOrder_args = __TObject:new{
---  city
---}
+PlaceOrder_args = __TObject:new{
+  city
+}
 
 function PlaceOrder_args:read(iprot)
   iprot:readStructBegin()
@@ -197,5 +178,3 @@ function PlaceOrder_result:write(oprot)
   oprot:writeFieldStop()
   oprot:writeStructEnd()
 end
-
-return OrderBeverageServiceClient
